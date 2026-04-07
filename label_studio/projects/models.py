@@ -1314,13 +1314,13 @@ class Project(ProjectMixin, FsmHistoryStateModel):
 
     if connection.vendor == 'postgresql':
         search_vector = GeneratedField(
-            expression=RawSQL(
-                "setweight(to_tsvector('english', COALESCE(CAST(id AS TEXT), '')), 'A') || "
-                "setweight(to_tsvector('english', COALESCE(title, '')), 'B') || "
-                "setweight(to_tsvector('english', COALESCE(SUBSTRING(description, 1, 250000), '')), 'C')",
-                params=[],
-                output_field=SearchVectorField(),
-            ),
+            # expression=RawSQL(
+            #     "setweight(to_tsvector('english', COALESCE(CAST(id AS TEXT), '')), 'A') || "
+            #     "setweight(to_tsvector('english', COALESCE(title, '')), 'B') || "
+            #     "setweight(to_tsvector('english', COALESCE(SUBSTRING(description, 1, 250000), '')), 'C')",
+            #     params=[],
+            #     output_field=SearchVectorField(),
+            # ),
             output_field=SearchVectorField(),
             db_persist=True,
         )
