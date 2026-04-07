@@ -218,10 +218,10 @@ def add_result_filter(field_name, _filter, filter_expressions, project):
     # Annotation
     if field_name == 'annotations_results':
         subquery = Q(
-            id__in=Annotation.objects.annotate(json_str=RawSQL('cast(result as text)', ''))
-            .filter(Q(project=project) & Q(json_str__contains=_filter.value))
-            .filter(task=OuterRef('pk'))
-            .values_list('task', flat=True)
+            # id__in=Annotation.objects.annotate(json_str=RawSQL('cast(result as text)', ''))
+            # .filter(Q(project=project) & Q(json_str__contains=_filter.value))
+            # .filter(task=OuterRef('pk'))
+            # .values_list('task', flat=True)
         )
     # Predictions: they don't have `project` yet
     else:
