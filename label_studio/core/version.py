@@ -90,13 +90,13 @@ def get_git_commit_info(skip_os=True, ls=False):
                 .decode('utf8'),
                 'branch': BRANCH_OVERRIDE
                 if BRANCH_OVERRIDE
-                else run(
-                    "git branch --sort=committerdate -r --contains | grep -m 1 -v HEAD | cut -d'/' -f2-",
-                    stderr=STDOUT,
-                    shell=True,
-                )
-                .strip()
-                .decode('utf8'),
+                # else run(
+                #     "git branch --sort=committerdate -r --contains | grep -m 1 -v HEAD | cut -d'/' -f2-",
+                #     stderr=STDOUT,
+                #     shell=True,
+                # )
+                # .strip()
+                # .decode('utf8'),
             }
         except CalledProcessError:
             os.chdir(cwd)
