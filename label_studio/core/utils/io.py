@@ -136,8 +136,9 @@ def json_load(file, int_keys=False):
 def read_yaml(filepath):
     if not os.path.exists(filepath):
         filepath = find_file(filepath)
-    with io.open(filepath, encoding='utf-8') as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)  # nosec
+    # with io.open(filepath, encoding='utf-8') as f:
+    #    data = yaml.load(f, Loader=yaml.FullLoader)  # nosec
+    data = none
     return data
 
 
