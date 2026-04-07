@@ -21,11 +21,11 @@ class Migration(migrations.Migration):
                 name="search_vector",
                 field=models.GeneratedField(
                     db_persist=True,
-                    expression=django.db.models.expressions.RawSQL(
-                        "setweight(to_tsvector('english', COALESCE(CAST(id AS TEXT), '')), 'A') || setweight(to_tsvector('english', COALESCE(title, '')), 'B') || setweight(to_tsvector('english', COALESCE(SUBSTRING(description, 1, 250000), '')), 'C')",
-                        output_field=django.contrib.postgres.search.SearchVectorField(),
-                        params=[],
-                    ),
+                    # expression=django.db.models.expressions.RawSQL(
+                    #     "setweight(to_tsvector('english', COALESCE(CAST(id AS TEXT), '')), 'A') || setweight(to_tsvector('english', COALESCE(title, '')), 'B') || setweight(to_tsvector('english', COALESCE(SUBSTRING(description, 1, 250000), '')), 'C')",
+                    #     output_field=django.contrib.postgres.search.SearchVectorField(),
+                    #     params=[],
+                    # ),
                     output_field=django.contrib.postgres.search.SearchVectorField(),
                 ),
             )
