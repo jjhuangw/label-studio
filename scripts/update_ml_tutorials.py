@@ -86,7 +86,7 @@ def update_ml_tutorials_index(files_and_headers: List):
 
     yaml_content = re.findall(r'---\n(.*?)\n---', content, re.DOTALL)
     # read in python dict
-    data = yaml.load(yaml_content[0].strip(), Loader=yaml.FullLoader)
+    # data = yaml.load(yaml_content[0].strip(), Loader=yaml.FullLoader)
     data['cards'] = []
     print(data)
     for f in files_and_headers:
