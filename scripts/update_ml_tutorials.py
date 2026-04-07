@@ -71,7 +71,7 @@ def create_tutorial_files():
                 f.write('\n---\n\n')
             f.write(parsed_content['body'])
         files_and_headers.append(
-            {'model_name': model_name, 'header': yaml.load(parsed_content['header'], Loader=yaml.FullLoader)}
+            # {'model_name': model_name, 'header': yaml.load(parsed_content['header'], Loader=yaml.FullLoader)}
         )
 
     update_ml_tutorials_index(files_and_headers)
@@ -86,7 +86,7 @@ def update_ml_tutorials_index(files_and_headers: List):
 
     yaml_content = re.findall(r'---\n(.*?)\n---', content, re.DOTALL)
     # read in python dict
-    data = yaml.load(yaml_content[0].strip(), Loader=yaml.FullLoader)
+    # data = yaml.load(yaml_content[0].strip(), Loader=yaml.FullLoader)
     data['cards'] = []
     print(data)
     for f in files_and_headers:
