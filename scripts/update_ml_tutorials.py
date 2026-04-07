@@ -71,7 +71,7 @@ def create_tutorial_files():
                 f.write('\n---\n\n')
             f.write(parsed_content['body'])
         files_and_headers.append(
-            {'model_name': model_name, 'header': yaml.load(parsed_content['header'], Loader=yaml.FullLoader)}
+            # {'model_name': model_name, 'header': yaml.load(parsed_content['header'], Loader=yaml.FullLoader)}
         )
 
     update_ml_tutorials_index(files_and_headers)
