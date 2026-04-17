@@ -17,6 +17,74 @@ import { IMAGE_SIZE_COEFFICIENT } from "../../DataGroups/ImageDataGroup";
 
 const NO_IMAGE_CELL_HEIGHT = 250;
 const CELL_HEADER_HEIGHT = 32;
+const RESULTS_FOOTER_HEIGHT = 64;
+
+const extractLabels = (result) => {
+  if (!result || !Array.isArray(result)) return [];
+  const labels = [];
+  const labelKeys = ["choices", "labels", "polygonlabels", "rectanglelabels", "ellipselabels", "brushlabels", "keypointlabels", "timeserieslabels", "taxonomy"];
+  for (const item of result) {
+    const value = item?.value;
+    if (!value) continue;
+    for (const key of labelKeys) {
+      if (Array.isArray(value[key])) labels.push(...value[key].flat());
+    }
+    if (typeof value.text === "string") labels.push(value.text.length > 20 ? value.text.slice(0, 20) + "…" : value.text);
+    if (value.number !== undefined) labels.push(String(value.number));
+    if (value.rating !== undefined) labels.push(`★ ${value.rating}`);
+  }
+  return [...new Set(labels)];
+};
+
+const GridResultsFooter = observer(({ row }) => {
+  const annotations = row.annotations ?? [];
+  const predictions = row.predictions ?? [];
+  if (annotations.length === 0 && predictions.length === 0) return null;
+
+  const annotationLabels = annotations.flatMap((ann) => extractLabels(ann.result));
+  const predictionLabels = predictions.flatMap((pred) => extractLabels(pred.result));
+  const predictionScore = predictions[0]?.score;
+
+  return (
+    <div className={cn("grid-view").elem("cell-footer").toClassName()}>
+      {annotationLabels.length > 0 && (
+        <div className={cn("grid-view").elem("cell-footer-row").toClassName()}>
+          <span className={cn("grid-view").elem("cell-footer-badge").mod({ annotation: true }).toClassName()}>A</span>
+          <div className={cn("grid-view").elem("cell-footer-tags").toClassName()}>
+            {annotationLabels.slice(0, 4).map((label, i) => (
+              <span key={i} className={cn("grid-view").elem("cell-footer-tag").mod({ annotation: true }).toClassName()}>
+                {label}
+              </span>
+            ))}
+            {annotationLabels.length > 4 && (
+              <span className={cn("grid-view").elem("cell-footer-more").toClassName()}>+{annotationLabels.length - 4}</span>
+            )}
+          </div>
+        </div>
+      )}
+      {predictionLabels.length > 0 && (
+        <div className={cn("grid-view").elem("cell-footer-row").toClassName()}>
+          <span className={cn("grid-view").elem("cell-footer-badge").mod({ prediction: true }).toClassName()}>P</span>
+          <div className={cn("grid-view").elem("cell-footer-tags").toClassName()}>
+            {predictionLabels.slice(0, 4).map((label, i) => (
+              <span key={i} className={cn("grid-view").elem("cell-footer-tag").mod({ prediction: true }).toClassName()}>
+                {label}
+              </span>
+            ))}
+            {predictionLabels.length > 4 && (
+              <span className={cn("grid-view").elem("cell-footer-more").toClassName()}>+{predictionLabels.length - 4}</span>
+            )}
+            {predictionScore !== null && predictionScore !== undefined && (
+              <span className={cn("grid-view").elem("cell-footer-score").toClassName()}>
+                {(predictionScore * 100).toFixed(0)}%
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+});
 
 export const GridHeader = observer(({ row, selected, onSelect }) => {
   const isSelected = selected.isSelected(row.id);
@@ -126,6 +194,7 @@ export const GridCell = observer(({ view, selected, row, fields, onClick, column
         >
           <GridBody view={view} row={row} fields={fields} columnCount={columnCount} />
         </div>
+        <GridResultsFooter row={row} />
       </div>
     </div>
   );
@@ -152,7 +221,7 @@ export const GridView = observer(({ data, view, loadMore, fields, onChange, hidd
         }, 16)
     : NO_IMAGE_CELL_HEIGHT;
   const finalRowHeight =
-    CELL_HEADER_HEIGHT + rowHeight * (hasImage ? Math.max(1, (IMAGE_SIZE_COEFFICIENT - columnCount) * 0.5) : 1);
+    CELL_HEADER_HEIGHT + rowHeight * (hasImage ? Math.max(1, (IMAGE_SIZE_COEFFICIENT - columnCount) * 0.5) : 1) + RESULTS_FOOTER_HEIGHT;
 
   // Calculate the total number of rows needed to display all items
   const itemCount = view.dataStore.total || data.length;
